@@ -235,7 +235,6 @@ const arrayData = [
     src: 'jaya.jpg',
     alt: 'I bet,Jaya is here',
     skills: [
-      ,
       'HTML5',
       'CSS3',
       'JavaScript',
@@ -289,7 +288,7 @@ const arrayData = [
     nationality: 'Vietnam',
     src: 'trung.jpg',
     alt: 'Really, no photo here!',
-    Skills: [''],
+    skills: ['HTML', 'CSS', 'JavaScript'],
     whySofterDeveloper: 'Why not ?!',
     longTermVision: 'Retired before 50 then work remotely and travel world',
     motivatesMe:
@@ -596,9 +595,9 @@ const arrayData = [
     lastName: 'Bakos',
     title: 'Trainee',
     nationality: 'Hungarian',
-		src: 'zsuzsanna.jpg',
+    src: 'zsuzsanna.jpg',
     alt: 'Zsuzsanna Bakos',
-    Skills: ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'AutoCad 3D'],
+    skills: ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'AutoCad 3D'],
     whySofterDeveloper:
       'I like to create creative design and to challenge myself with new things',
     longTermVision: 'To be a unique Web-Designer',
@@ -835,13 +834,13 @@ const arrayData = [
     joinedOn: '1st of August'
   },
   {
-    firstName: 'paul',
-    lastName: 'kiczko',
+    firstName: 'Paul',
+    lastName: 'Kiczko',
     title: 'Trainee',
-    nationality: 'polish',
+    nationality: 'Polish',
     src: 'paul.jpg',
     alt: 'Paul',
-    Skills: ['cooking', 'HTML', 'CSS', 'JavaScript', 'C/C++', 'Python', 'SQL'],
+    skills: ['cooking', 'HTML', 'CSS', 'JavaScript', 'C/C++', 'Python', 'SQL'],
     whySofterDeveloper:
       'I like the results of a successful coding session. Coding is boring sometimes, but the results are thrilling!',
     longTermVision: 'The end of the world',
@@ -915,7 +914,7 @@ const arrayData = [
     nationality: 'Finnish',
     src: 'yanze.jpg',
     alt: 'Yanze',
-    skills: [0],
+    skills: ['HTML', 'CSS', 'JavaScript'],
     whySofterDeveloper: "I don't know",
     longTermVision: "I don't know",
     motivatesMe: 'Tea',
