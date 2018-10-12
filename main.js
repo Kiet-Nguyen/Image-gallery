@@ -39,7 +39,9 @@ const generateSliderPager = () => {
     sliderPagerContainer.insertAdjacentHTML(
       'beforeend',
       `
-      <button class="slider-pager__item js-pager-item" type="button" data-slide-index="${dataIndex}">
+      <button class="slider-pager__item js-pager-item ${
+        dataIndex === 0 ? 'active' : ''
+      }" type="button" data-slide-index="${dataIndex}">
         <img src="./images/${
           data.src
         }" class="img-responsive slider-pager__img" />
@@ -49,12 +51,10 @@ const generateSliderPager = () => {
   });
 };
 
-const Slider = function(id) {
+const Slider = function (id) {
   this.slider = document.getElementById(id);
   this.slideList = this.slider.getElementsByClassName('js-slide-list')[0];
-  this.slideListItems = this.slider.getElementsByClassName(
-    'js-slide-list-item'
-  );
+  this.slideListItems = this.slider.getElementsByClassName('js-slide-list-item');
   this.slideWidth = this.slideListItems[0].offsetWidth;
   this.slidesLength = this.slideListItems.length;
   // Means we're at slide 0 (Slide 1)
@@ -65,29 +65,29 @@ const Slider = function(id) {
 
 Slider.prototype = {
   constructor: Slider,
-  init: function() {
+  init: function () {
     this.listenEvents();
     this.cloneFirstAndLastItem();
   },
 
-  listenEvents: function() {
+  listenEvents: function () {
     let that = this;
     let arrowButtons = this.slider.getElementsByClassName('js-arrow-button');
     for (let i = 0; i < arrowButtons.length; i++) {
-      arrowButtons[i].addEventListener('click', function() {
+      arrowButtons[i].addEventListener('click', function () {
         that.clickArrowButton(this);
       });
     }
 
     let pagerItems = this.slider.getElementsByClassName('js-pager-item');
     for (let i = 0; i < pagerItems.length; i++) {
-      pagerItems[i].addEventListener('click', function() {
+      pagerItems[i].addEventListener('click', function () {
         that.clickPagerItem(this);
       });
     }
   },
 
-  cloneFirstAndLastItem: function() {
+  cloneFirstAndLastItem: function () {
     let firstSlide = this.slideListItems[0];
     let lastSlide = this.slideListItems[this.slidesLength - 1];
     let firstSlideClone = firstSlide.cloneNode(true);
@@ -101,17 +101,20 @@ Slider.prototype = {
     this.slideList.insertBefore(lastSlideClone, firstSlide);
   },
 
-  clickArrowButton: function(el) {
+  clickArrowButton: function (el) {
     let direction = el.getAttribute('data-direction');
     let pos = parseInt(this.slideList.style.left) || 0;
     let newPos;
+    let allPager = this.slider.querySelectorAll('.js-pager-item');
+
     // direction will be added to current slide number
     this.direction = direction === 'prev' ? -1 : 1;
     newPos = pos + -1 * 100 * this.direction;
+
     if (!this.animating) {
       this.slideTo(
         this.slideList,
-        function(progress) {
+        function (progress) {
           return Math.pow(progress, 2);
         },
         pos,
@@ -121,25 +124,40 @@ Slider.prototype = {
       // Update current slide number
       this.current += this.direction;
     }
+
+    allPager.forEach(pager => {
+      let pagerIndex = pager.getAttribute('data-slide-index');
+      let targetPager = this.slider.querySelector('.js-pager-item[data-slide-index="' + pagerIndex + '"]');
+
+      if (targetPager.classList.contains('active')) {
+        targetPager.classList.remove('active');
+      }
+
+      if (this.current - 1 === parseInt(targetPager.dataset.slideIndex)) {
+        targetPager.classList.add('active');
+      }
+    });
   },
 
-  clickPagerItem: function(el) {
+  clickPagerItem: function (el) {
     let slideIndex = el.getAttribute('data-slide-index');
-    let targetSlide = this.slider.querySelector(
-      '.js-slide-list-item[data-slide-index="' + slideIndex + '"]'
-    );
-    let targetPager = this.slider.querySelector(
-      '.js-pager-item[data-slide-index="' + slideIndex + '"]'
-    );
+    let targetSlide = this.slider.querySelector('.js-slide-list-item[data-slide-index="' + slideIndex + '"]');
+    let allPager = this.slider.querySelectorAll('.js-pager-item');
+    let targetPager = this.slider.querySelector('.js-pager-item[data-slide-index="' + slideIndex + '"]');
     let pos = parseInt(this.slideList.style.left) || 0;
-    let newPos =
-      Math.round(targetSlide.offsetLeft / targetSlide.offsetWidth) * 100 * -1;
-    targetPager.style.opacity = '1';
+    let newPos = Math.round(targetSlide.offsetLeft / targetSlide.offsetWidth) * 100 * -1;
+
+    allPager.forEach(pager => {
+      if (pager.classList.contains('active')) {
+        pager.classList.remove('active');
+      }
+    });
+    targetPager.classList.add('active');
 
     if (!this.animating && pos !== newPos) {
       this.slideTo(
         this.slideList,
-        function(progress) {
+        function (progress) {
           return Math.pow(progress, 2);
         },
         pos,
@@ -151,13 +169,13 @@ Slider.prototype = {
     }
   },
 
-  slideTo: function(element, deltaFunc, pos, newPos, duration) {
+  slideTo: function (element, deltaFunc, pos, newPos, duration) {
     this.animating = true;
     this.animate({
       delay: 20,
       duration: duration || 1000,
       deltaFunc: deltaFunc,
-      step: function(delta) {
+      step: function (delta) {
         var direction = pos > newPos ? 1 : -1;
         element.style.left =
           pos + Math.abs(newPos - pos) * delta * direction * -1 + '%';
@@ -179,10 +197,10 @@ Slider.prototype = {
     });
   },
 
-  animate: function(opts) {
+  animate: function (opts) {
     let that = this;
     let start = new Date();
-    let id = setInterval(function() {
+    let id = setInterval(function () {
       let timePassed = new Date() - start;
       let progress = timePassed / opts.duration;
 
@@ -200,7 +218,7 @@ Slider.prototype = {
     }, opts.delay || 10);
   },
 
-  checkCurrentSlide: function() {
+  checkCurrentSlide: function () {
     let cycle = false;
     //this.current += this.direction;
     // Are we at the cloned slides?
@@ -216,7 +234,7 @@ Slider.prototype = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   generatePhotos();
   generateSliderPager();
   new Slider('categorySlider').init();
